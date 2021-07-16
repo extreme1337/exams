@@ -21,4 +21,7 @@ admin.site.register(Exam, ExamAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answare)
 admin.site.register(School)
-admin.site.register(Subject)
+
+class SubjectAdmin(admin.ModelAdmin):
+    list_display = ['__str__', 'school']
+admin.site.register(Subject, SubjectAdmin)
