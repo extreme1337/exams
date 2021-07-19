@@ -22,5 +22,5 @@ admin.site.register(Question, QuestionAdmin)
 admin.site.register(School)
 
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'school']
+    list_display = ['__str__']
 admin.site.register(Subject, SubjectAdmin)

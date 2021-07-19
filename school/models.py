@@ -1,21 +1,19 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from account.models import *
+
 
 
 # Create your models here.
 class School(models.Model):
     name = models.CharField(max_length=220)
     course = models.CharField(max_length=220)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.name}: {self.course}"
 
 class Subject(models.Model):
     name = models.CharField(max_length=220)
-    school = models.ForeignKey(School, on_delete=models.CASCADE)
-    
+    school = models.ManyToManyField(School)
     
     def __str__(self):
         return self.name
@@ -25,7 +23,7 @@ class Exam(models.Model):
     active = models.BooleanField(default=False)
     duration = models.IntegerField()
     required_score_to_pass = models.IntegerField(help_text="required score in %")
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    subject  = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.subject}: {self.type}"

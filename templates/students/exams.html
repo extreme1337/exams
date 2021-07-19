@@ -1,0 +1,28 @@
+<h2>Exams</h2>
+
+<dvi class="card">
+    <table class="table mb-0">
+        <thead>
+            <tr>
+                <th>Exam</th>
+                <th>Subject</th>
+                <th>Duration</th>
+                <th>Minimum to pass</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exam in exams %}
+                <tr>
+                    <td class="align-middle">{{exam.type}}</td>
+                    <td class="align-middle">{{exam.subject}}</td>
+                    <td class="align-middle">{{exam.duration}}</td>
+                    <td class="align-middle">{{exam.required_score_to_pass}}</td>
+                    <td class="align-middle"><a href="#">LINK</a></td>
+                </tr>
+            {% endfor %}
+                
+        </tbody>
+    </table>
+</dvi>
+    
