@@ -3,7 +3,7 @@ from .models import Answare, Exam, Question, School, Subject
 
 # Register your models here.
 class ExamAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'active')
+    list_display = ('pk', '__str__', 'active')
   
     def active(self, obj):
         return obj.is_active == 1

@@ -38,7 +38,7 @@ class Question(models.Model):
     picture = models.ImageField(null=True, blank=True)
     level = models.CharField(max_length=6, choices=Difficulty.choices)
     multiple_answares = models.BooleanField(default=False)
-    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name='questions')
     points = models.IntegerField()
 
     def __str__(self):

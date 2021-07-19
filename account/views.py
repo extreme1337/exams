@@ -20,3 +20,16 @@ class ExamListView(ListView):
     def get_queryset(self):
         queryset = Exam.objects.filter(active=True)
         return queryset
+
+def take_exam(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+    #student = request.user.student
+
+    #if student.exams.filter(pk=pk).exists():
+    #    return render(request, '')
+
+    total_questions = exam.questions.count()
+    
+
+    return render(request, 'students/exam.html')
+
