@@ -1,10 +1,11 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
 from school.models import Exam
+from account.models import *
 
 # Create your models here.
 class Score(models.Model):
-    user = models.CharField(max_length=220)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     score = models.FloatField()
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)

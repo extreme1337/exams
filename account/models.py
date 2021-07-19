@@ -1,9 +1,10 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from school.models import Exam, School, Subject
 
 # Create your models here.
-class User(models.Model):
+class User(AbstractUser):
     first_name = models.CharField(max_length=220)
     last_name = models.CharField(max_length=220)
     email = models.EmailField()
@@ -12,9 +13,7 @@ class User(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    school = models.OneToOneField(School, on_delete=models.CASCADE)
-    taken_exams = models.ManyToManyField(Exam, related_name='taken_exams', blank=True, null=True)
-
+    exams = models.ManyToManyField(Exam, through='TakenExam')
 
 
 class Admin(models.Model):
@@ -23,5 +22,11 @@ class Admin(models.Model):
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    
+
+
+class TakenExam(models.Model):
+    studen = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='taken_exams')
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name='taken_exams')
+    score = models.FloatField()
+    date = models.DateTimeField(auto_now_add=True)
     

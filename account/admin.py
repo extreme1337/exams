@@ -7,7 +7,7 @@ class StudentInline(admin.TabularInline):
 
 
 class UserStudentAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name']
+    list_display = ['username', 'first_name', 'last_name']
     inlines = [StudentInline]
     #exclude = ['Student.taken_exams']
     #readonly_fields=('Student.taken_exams', )

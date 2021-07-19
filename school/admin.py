@@ -19,7 +19,6 @@ class QuestionAdmin(admin.ModelAdmin):
 
 admin.site.register(Exam, ExamAdmin)
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(Answare)
 admin.site.register(School)
 
 class SubjectAdmin(admin.ModelAdmin):
