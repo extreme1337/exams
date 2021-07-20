@@ -20,11 +20,13 @@ from  django.conf import settings
 
 admin.site.site_header = 'Tehnical School'
 
+app_name='exams'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('account/', include("account.urls", namespace='account')),
-    path('school/', include("school.urls", namespace='school')),
-    path('score/', include("score.urls", namespace='score')),
+    path('account/', include("account.urls")),
+    path('school/', include("school.urls")),
+    path('score/', include("score.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

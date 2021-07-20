@@ -19,7 +19,7 @@
                         </div>
                         <div class="col-6 text-right">
                             {% if user.is_authenticated %}
-                                <p class="pt-3">Logged in as <strong>IME</strong>. <a href="#">Log Out</a></p>
+                                <p class="pt-3">Logged in as <strong>{{user.email}}</strong>. <a href="#">Log Out</a></p>
                             {% else %}
                                 <a href="#" class="btn btn-light" role="button">Log in</a>
                                 <a href="#" class="btn btn-primary" role="button">Sign up</a>

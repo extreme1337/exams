@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Answare, Exam, Question, School, Subject
+from .models import Answer, Exam, Question, School, Subject
 
 # Register your models here.
 class ExamAdmin(admin.ModelAdmin):
@@ -10,12 +10,12 @@ class ExamAdmin(admin.ModelAdmin):
   
     active.boolean = True
 
-class AnswareInline(admin.TabularInline):
-    model = Answare
+class AnswerInline(admin.TabularInline):
+    model = Answer
   
 
 class QuestionAdmin(admin.ModelAdmin):
-    inlines = [AnswareInline]
+    inlines = [AnswerInline]
 
 admin.site.register(Exam, ExamAdmin)
 admin.site.register(Question, QuestionAdmin)

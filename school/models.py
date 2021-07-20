@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -24,6 +25,7 @@ class Exam(models.Model):
     duration = models.IntegerField()
     required_score_to_pass = models.IntegerField(help_text="required score in %")
     subject  = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    owner = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name='exams')
 
     def __str__(self):
         return f"{self.subject}: {self.type}"
@@ -37,7 +39,7 @@ class Question(models.Model):
     question_text = models.CharField(max_length=250)
     picture = models.ImageField(null=True, blank=True)
     level = models.CharField(max_length=6, choices=Difficulty.choices)
-    multiple_answares = models.BooleanField(default=False)
+    multiple_answers = models.BooleanField(default=False)
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name='questions')
     points = models.IntegerField()
 
@@ -45,7 +47,7 @@ class Question(models.Model):
         return self.question_text
 
 
-class Answare(models.Model):
+class Answer(models.Model):
     text = models.CharField(max_length=300)
     correct = models.BooleanField(default=False)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
