@@ -27,7 +27,7 @@ class Student(models.Model):
 
 
 class TakenExam(models.Model):
-    studen = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='taken_exams')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='taken_exams')
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name='taken_exams')
     score = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)
