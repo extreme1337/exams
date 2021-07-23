@@ -101,7 +101,7 @@ class ExamTeacherListView(ListView):
 @method_decorator([login_required, teacher_required], name='dispatch')
 class ExamTeacherCreateView(CreateView):
     model = Exam
-    fields = ('type', 'subject', )
+    fields = ('type', 'subject', 'active', 'duration', 'required_score_to_pass', 'nuber_of_questions', )
     context_object_name = 'exams'
     template_name = 'teachers/exam_add_form.html'
 
@@ -122,7 +122,7 @@ class ExamTeacherUpdateView(UpdateView):
     template_name = 'teachers/exam_change_form.html'
 
     def get_context_data(self, **kwargs):
-        kwargs['questions'] = self.get_object()
+        kwargs['questions'] = self.get_object().questions
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):
@@ -175,3 +175,66 @@ class ExamResultsView(DetailView):
     def get_queryset(self):
         return self.request.user.exams.all()
 
+
+def question_add(request, pk):
+
+    exam = get_object_or_404(Exam, pk=pk, owner=request.user)
+    print("BEFORE IF REQUEST ##################3")
+    if request.method == 'POST':
+        print("#################### AFTER PRINT REQUEST")
+        form = QuestionForm(request.POST)
+        print("########BEFORE FORM#############")
+        if form.is_valid():
+            print("*****************IN FORM***************")
+            question = form.save(commit=False)
+            question.exam = exam
+            question.save()
+            messages.success(request, 'You may now add answers/options to the question.')
+            return redirect('teachers:exam_change', exam.pk, question.pk)
+        else:
+            print("**********###############************")
+            form = QuestionForm()
+    form = QuestionForm()
+    return render(request, 'teachers/question_add_form.html', {'exam': exam, 'form': form})
+
+
+def question_change(request, exam_pk, question_pk):
+    # Simlar to the `question_add` view, this view is also managing
+    # the permissions at object-level. By querying both `exam` and
+    # `question` we are making sure only the owner of the exam can
+    # change its details and also only questions that belongs to this
+    # specific exam can be changed via this url (in cases where the
+    # user might have forged/player with the url params.
+    exam = get_object_or_404(Exam, pk=exam_pk, owner=request.user)
+    question = get_object_or_404(Question, pk=question_pk, exam=exam)
+
+    AnswerFormSet = inlineformset_factory(
+        Question,  # parent model
+        Answer,  # base model
+        formset=BaseAnswerInlineFormSet,
+        fields=('text', 'correct'),
+        min_num=2,
+        validate_min=True,
+        max_num=10,
+        validate_max=True
+    )
+
+    if request.method == 'POST':
+        form = QuestionForm(request.POST, instance=question)
+        formset = AnswerFormSet(request.POST, instance=question)
+        if form.is_valid() and formset.is_valid():
+            with transaction.atomic():
+                form.save()
+                formset.save()
+            messages.success(request, 'Question and answers saved with success!')
+            return redirect('teachers:exam_change', exam.pk)
+    else:
+        form = QuestionForm(instance=question)
+        formset = AnswerFormSet(instance=question)
+
+    return render(request, 'teachers/question_change_form.html', {
+        'exam': exam,
+        'question': question,
+        'form': form,
+        'formset': formset
+    })

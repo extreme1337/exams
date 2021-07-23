@@ -10,7 +10,28 @@ from .models import *
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ('question_text', )
+        fields = ('question_text', 'picture', 'level', 'multiple_answers', 'points')
+        '''
+        question_text = models.CharField(max_length=250)
+        picture = models.ImageField(null=True, blank=True)
+        level = models.CharField(max_length=6, choices=Difficulty.choices)
+        multiple_answers = models.BooleanField(default=False)
+        exam = models.ForeignKey('Exam', on_delete=models.CASCADE, related_name='questions')
+        points = models.IntegerField()
+        '''
+
+class BaseAnswerInlineFormSet(forms.BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+
+        has_one_correct_answer=False
+        for form in self.forms:
+            if not form.cleaned_data.get('DELETE', False):
+                if form.cleaned_data.get('correct', True):
+                    has_one_correct_answer=True
+                    break
+        if has_one_correct_answer:
+            raise ValidationError('Mark at least one answer as correct.', code='no_correct_answer')
 
 
 class TakeExamForm(forms.ModelForm):

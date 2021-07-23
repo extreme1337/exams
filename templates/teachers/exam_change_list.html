@@ -24,7 +24,13 @@
             <td class="align-middle"><a href="{% url 'teachers:exam_change' exam.pk %}">{{ exam.type }}</a></td>
             <td class="align-middle">{{exam.subject}}</td>
             <td class="align-middle">{{exam.active}}</td>
-            <td class="align-middle"><a type="button" class="btn primary-btn" href="#">Activate/Deactivate</a></td>
+            <td class="align-middle">
+              {% if exam.active == False %}
+                <a type="button" class="btn btn-success" href="">Activate</a>
+              {% else %}
+                <a type="button" class="btn btn-danger" href="">Deactive</a>                
+              {% endif %}
+            </td>
           </tr>
         {% empty %}
           <tr>

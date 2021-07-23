@@ -14,6 +14,9 @@ urlpatterns = [
         path('exam/add/', ExamTeacherCreateView.as_view(), name='exam_add'),
         path('exam/<int:pk>/', ExamTeacherUpdateView.as_view(), name='exam_change'),
         path('exam/<int:pk>/delete/', ExamTeacherDeleteView.as_view(), name='exam_delete'),
+        path('exam/<int:pk>/question/add/', question_add, name='question_add'),
+        path('exam/<int:exam_pk>/question/<int:question_pk>/', question_change, name='question_change'),
+
     ], 'account'), namespace='teachers'))
 
 ]
