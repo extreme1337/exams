@@ -12,10 +12,10 @@
   </nav>
   <h2 class="mb-3">Add a new question</h2>
   <p class="lead">Add first the text of the question. In the next step you will be able to add the possible answers.</p>
-  <form method="post" novalidate>
+  <form method="POST" novalidate>
     {% csrf_token %}
     {{ form|crispy }}
     <button type="submit" class="btn btn-success">Save</button>
-    <a href="{% url 'teachers:exam_change' exam.pk %}" class="btn btn-outline-secondary" role="button">Go to {{exam}}</a>
+    <a href="{% url 'teachers:exam_change' exam.pk %}" class="btn btn-outline-secondary" role="button">Go back to {{exam}}</a>
   </form>
 {% endblock %}

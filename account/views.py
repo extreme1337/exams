@@ -179,20 +179,15 @@ class ExamResultsView(DetailView):
 def question_add(request, pk):
 
     exam = get_object_or_404(Exam, pk=pk, owner=request.user)
-    print("BEFORE IF REQUEST ##################3")
     if request.method == 'POST':
-        print("#################### AFTER PRINT REQUEST")
         form = QuestionForm(request.POST)
-        print("########BEFORE FORM#############")
         if form.is_valid():
-            print("*****************IN FORM***************")
             question = form.save(commit=False)
             question.exam = exam
             question.save()
             messages.success(request, 'You may now add answers/options to the question.')
-            return redirect('teachers:exam_change', exam.pk, question.pk)
+            return redirect('teachers:exam_change', exam.pk)
         else:
-            print("**********###############************")
             form = QuestionForm()
     form = QuestionForm()
     return render(request, 'teachers/question_add_form.html', {'exam': exam, 'form': form})
@@ -222,6 +217,7 @@ def question_change(request, exam_pk, question_pk):
     if request.method == 'POST':
         form = QuestionForm(request.POST, instance=question)
         formset = AnswerFormSet(request.POST, instance=question)
+        print("##### POSLE POST #####")
         if form.is_valid() and formset.is_valid():
             with transaction.atomic():
                 form.save()
@@ -229,6 +225,7 @@ def question_change(request, exam_pk, question_pk):
             messages.success(request, 'Question and answers saved with success!')
             return redirect('teachers:exam_change', exam.pk)
     else:
+        print("######## ELSE #############")
         form = QuestionForm(instance=question)
         formset = AnswerFormSet(instance=question)
 
