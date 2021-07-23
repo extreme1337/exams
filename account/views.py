@@ -122,7 +122,7 @@ class ExamTeacherUpdateView(UpdateView):
     template_name = 'teachers/exam_change_form.html'
 
     def get_context_data(self, **kwargs):
-        kwargs['questions'] = self.get_object().questions
+        kwargs['questions'] = self.get_object().questions.annotate(answers_count=Count('answers'))
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):

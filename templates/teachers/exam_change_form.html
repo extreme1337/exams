@@ -43,7 +43,7 @@
               <a href="{% url 'teachers:question_change' exam.pk question.pk %}">{{question.question_text}}</a>
             </div>
             <div class="col-2">
-              10
+              {{question.answers_count}}
             </div>
           </div>
         </div>
