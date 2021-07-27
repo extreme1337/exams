@@ -1,0 +1,23 @@
+{% extends '../base.html' %}
+
+{% load crispy_forms_tags %}
+
+
+
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'teachers:exam_change_list' %}">My Exams</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'teachers:exam_change' exam.pk %}">{{exam.type}}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Confirm deletion</li>
+        </ol>
+    </nav>
+    <h2 class="mb-3">Confirm deletion</h2>
+    <p class="lead">Are you sure you want to delete the quiz <strong>{{exam.type}}</strong>? There is no going back.</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-lg">Yes, I'm sure</button>
+        <a href="{% url 'teachers:exam_change' exam.pk %}" class="btn btn-outline-secondary btn-lg" role="button">Go back</a>
+    </form>
+{% endblock content %}
+    

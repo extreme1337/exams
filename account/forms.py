@@ -23,7 +23,7 @@ class BaseAnswerInlineFormSet(forms.BaseInlineFormSet):
                 if form.cleaned_data.get('correct', False):
                     has_one_correct_answer=True
                     break
-        if has_one_correct_answer:
+        if has_one_correct_answer == False:
             raise ValidationError('Mark at least one answer as correct.', code='no_correct_answer')
 
 
@@ -44,3 +44,6 @@ class TakeExamForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['answer'].queryset = question.answers.order_by('question_text')
 
+
+def change_activity():
+    pass
