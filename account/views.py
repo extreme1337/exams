@@ -263,6 +263,8 @@ class QuestionDeleteView(DeleteView):
     
 
 
+@login_required
+@teacher_required
 def change_activity(request, pk):
     exam = get_object_or_404(Exam, pk=pk)
     exam.active = not exam.active
