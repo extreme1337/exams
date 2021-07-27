@@ -261,3 +261,10 @@ class QuestionDeleteView(DeleteView):
         question = self.get_object()
         return reverse('teachers:exam_change', kwargs={'pk': question.exam_id})
     
+
+
+def change_activity(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+    exam.active = not exam.active
+    exam.save()
+    return redirect('teachers:exam_change_list')

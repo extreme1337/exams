@@ -43,7 +43,3 @@ class TakeExamForm(forms.ModelForm):
         question = kwargs.pop('question')
         super().__init__(*args, **kwargs)
         self.fields['answer'].queryset = question.answers.order_by('question_text')
-
-
-def change_activity():
-    pass
