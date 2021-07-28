@@ -20,7 +20,7 @@
                     <td class="align-middle">{{exam.subject}}</td>
                     <td class="align-middle">{{exam.duration}} (min)</td>
                     <td class="align-middle">{{exam.required_score_to_pass}} %</td>
-                    <td class="align-right"><a href="{% url 'students:take_exam' exam.pk %}">LINK</a></td>
+                    <td class="align-right"><a href="{% url 'students:take_exam' exam.pk %}" role="button" class="btn btn-primary">LINK</a></td>
                 </tr>
             {% endfor %}
                 

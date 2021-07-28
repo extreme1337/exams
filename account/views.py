@@ -15,6 +15,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, UpdateView
 from .forms import *
 from .decorators import *
+from score.models import Score
 
 
 # Create your views here.
@@ -65,20 +66,75 @@ def exam_view(request, pk):
     return render(request, 'students/exam.html', {'exam': exam})
 
 
+@login_required
 def exam_data_view(request, pk):
     exam = get_object_or_404(Exam, pk=pk)
     questions = []
     for q in exam.get_questions():
         answers = []
         for a in q.get_answers():
-            answers.append(a.text)
+            answers.append(a.text)  
         questions.append({str(q): answers})
+        
     return JsonResponse({
         'data': questions,
         'time': exam.duration,
     })
 
 
+def save_exam_view(request, pk):
+    if request.is_ajax():
+        questions = []
+        data = request.POST
+        data_ = dict(data.lists())
+        print("##########################")
+        print(data_)
+        print("##########################")
+
+        data_.pop('csrfmiddlewaretoken')
+
+        for k in data_.keys():
+            print("##############**********************##################")
+            print('key: ', k)
+            print("##############**********************##################")
+            question = Question.objects.get(question=k)
+            questions.append(question)
+        print(questions)
+
+        user = request.user
+        exam = Exam.objects.get(pk=pk)
+
+        score = 0
+        multiplier = 100 / exam.number_of_questions
+        results = []
+        correct_answer = None
+
+        for q in questions:
+            a_selected = request.POST.get(q.text)
+
+            if a_selected != "":
+                question_answers = Answer.objects.filter(question=q)
+                for a in question_answers:
+                    if a_selected == a.text:
+                        if a.correct:
+                            score += 1
+                            correct_answer = a.text
+                    else:
+                        if a.correct:
+                            correct_answer = a.text
+
+                results.append({str(q): {'correct_answer': correct_answer, 'answered': a_selected}})
+            else:
+                results.append({str(q): 'not answered'})
+
+        score_ = score * multiplier
+        Score.objects.create(exam=exam, user=user, result=score_)
+
+        if score_>=exam.requeired_score_to_pass:
+            return JsonResponse({'passed': True, 'score':score_, 'results': results})
+        else:
+            return JsonResponse({'passed': False, 'score': score_, 'results': results})
+    
 
 ############################################################################
 #############################TEACHER VIEWS##################################

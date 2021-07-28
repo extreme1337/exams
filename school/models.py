@@ -32,7 +32,7 @@ class Exam(models.Model):
         return f"{self.subject}: {self.type}"
 
     def get_questions(self):
-        questions = list(Question.objects.filter(pk=self.pk))
+        questions = list(Question.objects.filter(exam=self.pk))
         return questions[:self.nuber_of_questions]
         
 
@@ -53,12 +53,12 @@ class Question(models.Model):
         return self.question_text
 
     def get_answers(self):
-        return self.answer_set.all()
+        return Answer.objects.filter(question=self.pk)
 
 
 class Answer(models.Model):
     text = models.CharField(max_length=300)
     correct = models.BooleanField(default=False)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question')
 
 

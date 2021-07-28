@@ -8,6 +8,7 @@ urlpatterns = [
         path('',  ExamStudentListView.as_view(), name='exam_list'),
         path('exam/<int:pk>/', exam_view, name='take_exam'),
         path('exam/<pk>/data/', exam_data_view, name='exam_data_view'),
+        path('exam/<pk>/save/', save_exam_view, name='save_exam')
     ], 'account'), namespace='students')),
     path('teachers/', include(([
         path('', ExamTeacherListView.as_view(), name='exam_change_list'),

@@ -6,7 +6,7 @@ const timerBox = document.getElementById('timer-box')
 
 
 const activateTimer = (time) => {
-    console.log(time)
+    console.log (time)
     if(time.toString().length < 2){
         timerBox.innerHTML = `<b>0${time}:00</b>`
     }else{
@@ -38,7 +38,7 @@ const activateTimer = (time) => {
             setTimeout(()=>{
                 clearInterval(timer)
                 alert('Time over')
-
+                sendData()
             })
         }
         timerBox.innerHTML = `<b>${displayMinutes}:${displaySeconds}</b>`
@@ -69,14 +69,80 @@ $.ajax({
             }
         });
         activateTimer(response.time)
+        
     },
     error: function(error){
         console.log(error)
     }
+    
 })}
 catch (error) {
-    console.log("################################# GRESKA #########################")
+    console.log(error) 
 }
 
 const examForm = document.getElementById('exam-form')
 const csrf = document.getElementsByName('csrfmiddlewaretoken')
+
+const sendData = () => {
+    const elements = [...document.getElementsByClassName('ans')]
+    const data = {}
+    data['csrfmiddlewaretoken'] = csrf[0].value
+    elements.forEach(el => {
+        console.log(Object.keys(data))
+        if(el.checked){
+            data[el.name] = el.value
+        } else {
+            if(!data[el.name]){
+                data[el.name] = null
+            }
+        }
+    })
+
+    $.ajax({
+        type: 'POST',
+        url: `${url}save/`,
+        data: data,
+        success: function(response){
+            const results = response.results
+            examForm.style.visibility = "hidden"
+
+            scoreBox.innerHTML = `${response.passed ? 'Congratulations! ': 'Ups..:( Your result is ${response.score.toFixed(2)}%'}`
+
+            results.forEach(res => {
+                const resDiv = document.createElement("div")
+                for (const[question, resp] of Object.entries(res)){
+                    resDiv.innerHTML += question
+                    const cls = ['container', 'p-3', 'text-light', 'h6']
+                    resDiv.classList.add(...cls)
+
+                    if(resp == 'not answered'){
+                        resDiv.innerHTML += '- not answered'
+                        resDiv.classList.add('bg-danger')
+                    } else {
+                        const answer = resp['answered']
+                        const correct = resp['correct_answer']
+
+                        if (answer == correct){
+                            resDiv.classList.add('bg-success')
+                            resDiv.innerHTML += `answered: ${answer}`
+                        } else {
+                            resDiv.classList.add('bg-danger')
+                            resDiv.innerHTML += ` | correct answer: ${correct}`
+                            resDiv.innerHTML += ` | answered: ${answer}`
+                        }
+                    }
+                }
+                resultBox.append(resDiv)
+            })
+        },
+        error: function(error){
+            console.log(error)
+        }
+    })
+}
+
+examForm.addEventListener('submit', e => {
+    e.preventDefault()
+
+    sendData()
+})
