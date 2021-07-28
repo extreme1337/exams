@@ -106,7 +106,8 @@ const sendData = () => {
             const results = response.results
             examForm.style.visibility = "hidden"
 
-            scoreBox.innerHTML = `${response.passed ? 'Congratulations! ': 'Ups..:( Your result is ${response.score.toFixed(2)}%'}`
+            scoreBox.innerHTML = `${response.passed ? 'Congratulations! ': 'Ups..:('} Your result is ${response.score.toFixed(2)}%`
+
 
             results.forEach(res => {
                 const resDiv = document.createElement("div")
@@ -124,7 +125,7 @@ const sendData = () => {
 
                         if (answer == correct){
                             resDiv.classList.add('bg-success')
-                            resDiv.innerHTML += `answered: ${answer}`
+                            resDiv.innerHTML += ` answered: ${answer}`
                         } else {
                             resDiv.classList.add('bg-danger')
                             resDiv.innerHTML += ` | correct answer: ${correct}`

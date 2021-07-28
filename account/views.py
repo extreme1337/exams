@@ -97,7 +97,7 @@ def save_exam_view(request, pk):
             print("##############**********************##################")
             print('key: ', k)
             print("##############**********************##################")
-            question = Question.objects.get(question=k)
+            question = Question.objects.get(question_text=k)
             questions.append(question)
         print(questions)
 
@@ -105,12 +105,12 @@ def save_exam_view(request, pk):
         exam = Exam.objects.get(pk=pk)
 
         score = 0
-        multiplier = 100 / exam.number_of_questions
+        multiplier = 100 / exam.nuber_of_questions
         results = []
         correct_answer = None
 
         for q in questions:
-            a_selected = request.POST.get(q.text)
+            a_selected = request.POST.get(q.question_text)
 
             if a_selected != "":
                 question_answers = Answer.objects.filter(question=q)
@@ -128,9 +128,9 @@ def save_exam_view(request, pk):
                 results.append({str(q): 'not answered'})
 
         score_ = score * multiplier
-        Score.objects.create(exam=exam, user=user, result=score_)
+        Score.objects.create(exam=exam, user=user, score=score_)
 
-        if score_>=exam.requeired_score_to_pass:
+        if score_>=exam.required_score_to_pass:
             return JsonResponse({'passed': True, 'score':score_, 'results': results})
         else:
             return JsonResponse({'passed': False, 'score': score_, 'results': results})

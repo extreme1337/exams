@@ -5,7 +5,7 @@ from account.models import *
 
 # Create your models here.
 class Score(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.FloatField()
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
