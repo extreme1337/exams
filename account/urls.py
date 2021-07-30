@@ -1,9 +1,11 @@
+from os import name
 from django.urls import path, include
 
 from .views import *
 
 
 urlpatterns = [
+    path('', home, name='home'),
     path('students/', include(([
         path('',  ExamStudentListView.as_view(), name='exam_list'),
         path('exam/<int:pk>/', exam_view, name='take_exam'),

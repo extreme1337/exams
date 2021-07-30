@@ -1,4 +1,5 @@
 from django.http.response import JsonResponse
+from django.urls.conf import path
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
 from school.models import Exam
@@ -18,7 +19,15 @@ from .decorators import *
 
 
 # Create your views here.
+def home(request):
+    if request.user.is_authenticated:
+        if request.user.is_teacher:
+            return redirect('teachers:exam_change_list')
+        else:
+            return redirect('students:exam_list')
+    return render(request, 'home.html')
 
+    
 ##########################################################################
 ##########################STUDENT VIEWS###################################
 ##########################################################################
