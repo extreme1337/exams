@@ -59,6 +59,6 @@ class Question(models.Model):
 class Answer(models.Model):
     text = models.CharField(max_length=300)
     correct = models.BooleanField(default=False)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
 
 

@@ -15,7 +15,6 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, UpdateView
 from .forms import *
 from .decorators import *
-from score.models import Score
 
 
 # Create your views here.
@@ -63,10 +62,17 @@ def take_exam(request, pk):
 method_decorator([login_required, student_required], name='dispatch')
 def exam_view(request, pk):
     exam = get_object_or_404(Exam, pk=pk)
-    return render(request, 'students/exam.html', {'exam': exam})
+    student = request.user.student
+
+    if student.exams.filter(pk=pk).exists():
+        queryset = request.user.student.taken_exams \
+            .select_related('exam', 'exam__subject') \
+                .order_by('exam__type')
+        return render(request, "students/taken_exam_list.html", {'taken_exams': queryset})
+    else:
+        return render(request, 'students/exam.html', {'exam': exam})
 
 
-@login_required
 def exam_data_view(request, pk):
     exam = get_object_or_404(Exam, pk=pk)
     questions = []
@@ -76,33 +82,31 @@ def exam_data_view(request, pk):
             answers.append(a.text)  
         questions.append({str(q): answers})
         
+    print(questions)
     return JsonResponse({
         'data': questions,
         'time': exam.duration,
     })
 
 
+@login_required
+@student_required
 def save_exam_view(request, pk):
     if request.is_ajax():
         questions = []
         data = request.POST
         data_ = dict(data.lists())
-        print("##########################")
-        print(data_)
-        print("##########################")
 
         data_.pop('csrfmiddlewaretoken')
 
         for k in data_.keys():
-            print("##############**********************##################")
             print('key: ', k)
-            print("##############**********************##################")
-            question = Question.objects.get(question_text=k)
+            question = get_object_or_404(Question, question_text=k)
             questions.append(question)
         print(questions)
-
-        user = request.user
-        exam = Exam.objects.get(pk=pk)
+        
+        student = request.user.student
+        exam = get_object_or_404(Exam, pk=pk)
 
         score = 0
         multiplier = 100 / exam.nuber_of_questions
@@ -110,6 +114,9 @@ def save_exam_view(request, pk):
         correct_answer = None
 
         for q in questions:
+            print("###########################")
+            print(q)
+            print("###########################")
             a_selected = request.POST.get(q.question_text)
 
             if a_selected != "":
@@ -128,13 +135,26 @@ def save_exam_view(request, pk):
                 results.append({str(q): 'not answered'})
 
         score_ = score * multiplier
-        Score.objects.create(exam=exam, user=user, score=score_)
+        TakenExam.objects.create(student=student, exam=exam, score=score_)
 
         if score_>=exam.required_score_to_pass:
             return JsonResponse({'passed': True, 'score':score_, 'results': results})
         else:
             return JsonResponse({'passed': False, 'score': score_, 'results': results})
     
+
+class TakenExamsListView(ListView):
+    model = TakenExam
+    context_object_name = 'taken_exams'
+    template_name = 'students/taken_exam_list.html'
+
+    def get_queryset(self):
+        queryset = self.request.user.student.taken_exams \
+            .select_related('exam', 'exam__subject') \
+                .order_by('exam__type')
+
+        return queryset
+
 
 ############################################################################
 #############################TEACHER VIEWS##################################
@@ -326,3 +346,26 @@ def change_activity(request, pk):
     exam.active = not exam.active
     exam.save()
     return redirect('teachers:exam_change_list')
+
+
+
+class ExamResultsView(DetailView):
+    model = Exam
+    context_object_name = 'exam'
+    template_name = 'teachers/exam_results.html'
+
+    def get_context_data(self, **kwargs):
+        exam = self.get_object()
+        taken_exams = exam.taken_exams.select_related('student__user').order_by('-date')
+        total_taken_exams = taken_exams.count()
+        exam_score = exam.taken_exams.aggregate(average_score=Avg('score'))
+        extra_content = {
+            'taken_exams': taken_exams,
+            'total_taken_exams': total_taken_exams,
+            'exam_score': exam_score
+        }
+        kwargs.update(extra_content)
+        return super().get_context_data(**kwargs)
+
+    def get_queryset(self):
+        return self.request.user.exams.all()

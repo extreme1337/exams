@@ -8,7 +8,8 @@ urlpatterns = [
         path('',  ExamStudentListView.as_view(), name='exam_list'),
         path('exam/<int:pk>/', exam_view, name='take_exam'),
         path('exam/<pk>/data/', exam_data_view, name='exam_data_view'),
-        path('exam/<pk>/save/', save_exam_view, name='save_exam')
+        path('exam/<pk>/save/', save_exam_view, name='save_exam'),
+        path('exam/taken/', TakenExamsListView.as_view(), name='taken_exam_list'),
     ], 'account'), namespace='students')),
     path('teachers/', include(([
         path('', ExamTeacherListView.as_view(), name='exam_change_list'),
@@ -19,6 +20,7 @@ urlpatterns = [
         path('exam/<int:pk>/question/add/', question_add, name='question_add'),
         path('exam/<int:exam_pk>/question/<int:question_pk>/', question_change, name='question_change'),
         path('exam/<int:exam_pk>/question/<int:question_pk>/delete', QuestionDeleteView.as_view(), name='question_delete'),
+        path('exam/<int:pk>/results/', ExamResultsView.as_view(), name='exam_results'),
     ], 'account'), namespace='teachers'))
 
 ]

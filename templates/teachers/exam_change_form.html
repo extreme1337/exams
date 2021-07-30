@@ -11,7 +11,7 @@
   </nav>
   <h2 class="mb-3">
     {{exam.type}}
-    <a href="" class="btn btn-primary float-right">View results</a>
+    <a href="{% url 'teachers:exam_results' exam.pk %}" class="btn btn-primary float-right">View results</a>
   </h2>
   <div class="row mb-3">
     <div class="col-md-6 col-sm-8 col-12">

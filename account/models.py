@@ -12,7 +12,7 @@ class User(AbstractUser):
     is_teacher = models.BooleanField(default=False)
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='student')
+    user = models.OneToOneField('User', on_delete=models.CASCADE, primary_key=True, related_name='student')
     exams = models.ManyToManyField(Exam, through='TakenExam')
 
     def get_unanswered_questions(self, exam):
