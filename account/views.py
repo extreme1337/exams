@@ -135,15 +135,18 @@ def save_exam_view(request, pk):
                         if a.correct:
                             score += 1
                             correct_answer = a.text
+                            StudentAnswer.objects.create(student=student, answer=a)
                     else:
                         if a.correct:
                             correct_answer = a.text
+                            StudentAnswer.objects.create(student=student, answer=a)
 
                 results.append({str(q): {'correct_answer': correct_answer, 'answered': a_selected}})
             else:
                 results.append({str(q): 'not answered'})
 
         score_ = score * multiplier
+        
         TakenExam.objects.create(student=student, exam=exam, score=score_)
 
         if score_>=exam.required_score_to_pass:
@@ -252,7 +255,7 @@ class ExamResultsView(DetailView):
         extra_context = {
             'taken_exams': taken_exams,
             'total_taken_exams': total_taken_exams,
-            'exam_score': exam_score
+            'exam_score': exam_score,
         }
         kwargs.update(extra_context)
         return super().get_context_data()

@@ -10,6 +10,7 @@
                     <th>Exam</th>
                     <th>Subject</th>
                     <th>Score</th>
+                    <th>Mark</th>
                 </tr>
             </thead>
             <tbody>
@@ -18,7 +19,20 @@
                     <tr>
                         <td>{{ taken_exam.exam.type }}</td>
                         <td>{{ taken_exam.exam.subject }}</td>
-                        <td {% if taken_exam.score < taken_exam.exam.required_score_to_pass %} class="badge badge-pill badge-danger" {% else %} class="badge badge-pill badge-success" {% endif %}>{{ taken_exam.score }} %</td>
+                        <td {% if taken_exam.score < taken_exam.exam.required_score_to_pass %} class="bg-danger" {% else %} class="bg-success" {% endif %}>{{ taken_exam.score }} %</td>
+                        <td>
+                            {% if taken_exam.score >= 55 and taken_exam.score < 65 %}
+                                2
+                            {% elif taken_exam.score >= 65 and taken_exam.score < 75 %}
+                                3
+                            {% elif taken_exam.score >= 75 and taken_exam.score < 90 %}
+                                4
+                            {% elif taken_exam.score >= 90 and taken_exam.score <= 100 %}
+                                5
+                            {% elif taken_exam.score < 55 %}
+                                1
+                            {% endif %}
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>

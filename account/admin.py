@@ -14,6 +14,7 @@ class UserTakenExam(admin.ModelAdmin):
     list_display = "__all__"
 
 admin.site.register(TakenExam)
+admin.site.register(StudentAnswer)
 
 admin.site.register(Student)
 

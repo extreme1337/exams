@@ -32,7 +32,13 @@ class TakenExam(models.Model):
     score = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.exam.type
+
 class StudentAnswer(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='exam_answeres')
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='+')
+
+    def __str__(self):
+        return self.answer.text
     

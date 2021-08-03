@@ -4,42 +4,88 @@
 
 
 {% block content %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'teachers:exam_change_list' %}" >My Exams</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'teachers:exam_change' exam.pk %}">{{ exam }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Results</li>
-        </ol>
-    </nav>
-    <h2 class="mb-3">{{ exam.type }} Results</h2>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'teachers:exam_change_list' %}">My Exams</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'teachers:exam_change' exam.pk %}">{{ exam }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Results</li>
+    </ol>
+</nav>
+<h2 class="mb-3">{{ exam.type }} Results</h2>
 
-    <div class="card">
-        <div class="card-header">
-            <strong>Taken Exams</strong>
-            <span class="badge badge-pill badge-primary float-right">Average Score: {{exam_score.average_score|default_if_none:0.0 }}</span>
-        </div>
-        <table class="table mb-0">
-            <thead>
-                <tr>
-                    <th>Student</th>
-                    <th>Date</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-                {% for taken_exam in taken_exams %}
-                    <tr>
-                        <td>{{ taken_exam.student.user.username }}</td>
-                        <td>{{ taken_exam.date|naturaltime }}</td>
-                        <td>{{ taken_exam.score }}</td>
-                    </tr>
-                {% endfor %}                    
-            </tbody>
-        </table>
-        <div class="card-footer text-muted">
-            Total respondents: <strong>{{ total_taken_exams }}</strong>
-        </div>
+<div class="card">
+    <div class="card-header">
+        <strong>Taken Exams</strong>
+        <span class="badge badge-pill badge-primary float-right">Average Score:
+            {{exam_score.average_score|default_if_none:0.0 }}</span>
     </div>
+    <table class="table mb-0">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Date</th>
+                <th>Score</th>
+                <th>Mark</th>
+                <th>Show answers</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for taken_exam in taken_exams %}
+            <tr data-toggle="collapse" data-target="#taken_exam{{taken_exam.id}}" class="accordion-toogle">
+                <td>{{ taken_exam.student.user.username }}</td>
+                <td>{{ taken_exam.date|naturaltime }}</td>
+                <td>{{ taken_exam.score }}</td>
+                <td>
+                    {% if taken_exam.score >= 55 and taken_exam.score < 65 %}
+                    2
+                    {% elif taken_exam.score >= 65 and taken_exam.score < 75 %}
+                    3
+                    {% elif taken_exam.score >= 75 and taken_exam.score < 90 %}
+                    4
+                    {% elif taken_exam.score >= 90 and taken_exam.score <= 100 %}
+                    5
+                    {% elif taken_exam.score < 55 %}
+                    1
+                    {% endif %}
+                </td>
+                <td><button class="btn btn-default btn-xs"><span
+                            class="glyphicon glyphicon-eye-open">Show</span></button></td>
+            </tr>
+            <tr>
+                <td colspan="12" class="hiddenRow">
+                    <div class="accordian-body collapse" id="taken_exam{{taken_exam.id}}">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr class="info">
+                                    <th>Question</th>
+                                    <th>Answere</th>
+                                    <th>Correct Answere</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for e in exam.questions.all %}
+                                <tr data-toggle="collapse" class="accordion-toggle"
+                                    data-target="#taken_exam{{taken_exam.id}}">
+                                    <td>{{e}}</td>
+                                    <td>Odgovor</td>
+                                    {% for a in e.answers.all %}
+                                        {% if a.correct %}
+                                            <td>{{a.text}}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="card-footer text-muted">
+        Total respondents: <strong>{{ total_taken_exams }}</strong>
+    </div>
+</div>
 {% endblock content %}
-    
