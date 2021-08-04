@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from school.models import Answer, Exam, School, Subject
+from school.models import Answer, Exam, Question, School, Subject
 
 # Create your models here.
 class User(AbstractUser):
@@ -37,7 +37,7 @@ class TakenExam(models.Model):
 
 class StudentAnswer(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='exam_answeres')
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='+')
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='answer')
 
     def __str__(self):
         return self.answer.text

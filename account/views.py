@@ -123,23 +123,19 @@ def save_exam_view(request, pk):
         correct_answer = None
 
         for q in questions:
-            print("###########################")
-            print(q)
-            print("###########################")
             a_selected = request.POST.get(q.question_text)
 
             if a_selected != "":
                 question_answers = Answer.objects.filter(question=q)
                 for a in question_answers:
                     if a_selected == a.text:
+                        StudentAnswer.objects.create(student=student, answer=a)
                         if a.correct:
                             score += 1
                             correct_answer = a.text
-                            StudentAnswer.objects.create(student=student, answer=a)
                     else:
                         if a.correct:
                             correct_answer = a.text
-                            StudentAnswer.objects.create(student=student, answer=a)
 
                 results.append({str(q): {'correct_answer': correct_answer, 'answered': a_selected}})
             else:
@@ -248,10 +244,12 @@ class ExamResultsView(DetailView):
     template_engine = 'teachers/exam_results.html'
 
     def get_context_data(self, **kwargs):
+        extra_context = self.get_context_data(**kwargs)
         exam = self.get_object()
         taken_exams = exam.taken_exams.select_related('student__user').order_by('-date')
         total_taken_exams = taken_exams.count()
         exam_score = exam.taken_exams.aggregate(average_score=Avg('score'))
+        
         extra_context = {
             'taken_exams': taken_exams,
             'total_taken_exams': total_taken_exams,
@@ -265,7 +263,6 @@ class ExamResultsView(DetailView):
 
 
 def question_add(request, pk):
-
     exam = get_object_or_404(Exam, pk=pk, owner=request.user)
     if request.method == 'POST':
         form = QuestionForm(request.POST)
@@ -305,7 +302,6 @@ def question_change(request, exam_pk, question_pk):
     if request.method == 'POST':
         form = QuestionForm(request.POST, instance=question)
         formset = AnswerFormSet(request.POST, instance=question)
-        print("##### POSLE POST #####")
         if form.is_valid() and formset.is_valid():
             with transaction.atomic():
                 form.save()
@@ -313,7 +309,6 @@ def question_change(request, exam_pk, question_pk):
             messages.success(request, 'Question and answers saved with success!')
             return redirect('teachers:exam_change', exam.pk)
     else:
-        print("######## ELSE #############")
         form = QuestionForm(instance=question)
         formset = AnswerFormSet(instance=question)
 
@@ -381,3 +376,9 @@ class ExamResultsView(DetailView):
 
     def get_queryset(self):
         return self.request.user.exams.all()
+
+
+
+#####################################################################################
+################################ ADMIN VIEWS ########################################
+#####################################################################################

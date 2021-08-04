@@ -2,7 +2,6 @@
 
 {% load crispy_forms_tags humanize  %}
 
-
 {% block content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -59,16 +58,20 @@
                             <thead>
                                 <tr class="info">
                                     <th>Question</th>
-                                    <th>Answere</th>
-                                    <th>Correct Answere</th>
+                                    <th>Answer</th>
+                                    <th>Correct Answer</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {% for e in exam.questions.all %}
+                            <tbody>    
+                                {% for e in taken_exam.exam.questions.all %}
                                 <tr data-toggle="collapse" class="accordion-toggle"
                                     data-target="#taken_exam{{taken_exam.id}}">
                                     <td>{{e}}</td>
-                                    <td>Odgovor</td>
+                                    {% for answer in e.answers.all %}
+                                        {% for stud_answer in answer.answer.all %}
+                                            <td>{{stud_answer}}</td>
+                                        {% endfor %}
+                                    {% endfor %}
                                     {% for a in e.answers.all %}
                                         {% if a.correct %}
                                             <td>{{a.text}}</td>

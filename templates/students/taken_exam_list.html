@@ -19,7 +19,7 @@
                     <tr>
                         <td>{{ taken_exam.exam.type }}</td>
                         <td>{{ taken_exam.exam.subject }}</td>
-                        <td {% if taken_exam.score < taken_exam.exam.required_score_to_pass %} class="bg-danger" {% else %} class="bg-success" {% endif %}>{{ taken_exam.score }} %</td>
+                        <td class=" {% if taken_exam.score < taken_exam.exam.required_score_to_pass %} bg-danger {% else %} bg-success {% endif %}">{{ taken_exam.score }} %</td>
                         <td>
                             {% if taken_exam.score >= 55 and taken_exam.score < 65 %}
                                 2
