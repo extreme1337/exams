@@ -69,12 +69,14 @@
                                     <td>{{e}}</td>
                                     {% for answer in e.answers.all %}
                                         {% for stud_answer in answer.answer.all %}
-                                            <td>{{stud_answer}}</td>
+                                            {% if stud_answer.student == taken_exam.student %}
+                                                <td>{{stud_answer}}</td>
+                                            {% endif %}
                                         {% endfor %}
                                     {% endfor %}
-                                    {% for a in e.answers.all %}
-                                        {% if a.correct %}
-                                            <td>{{a.text}}</td>
+                                    {% for answer in e.answers.all %}
+                                        {% if answer.correct %}
+                                            <td>{{answer.text}}</td>
                                         {% endif %}
                                     {% endfor %}
                                 </tr>

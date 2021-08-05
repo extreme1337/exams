@@ -151,6 +151,7 @@ def save_exam_view(request, pk):
             return JsonResponse({'passed': False, 'score': score_, 'results': results})
     
 
+method_decorator([login_required, student_required], name='dispatch')
 class TakenExamsListView(ListView):
     model = TakenExam
     context_object_name = 'taken_exams'
@@ -262,6 +263,7 @@ class ExamResultsView(DetailView):
         return self.request.user.exams.all()
 
 
+@login_required
 def question_add(request, pk):
     exam = get_object_or_404(Exam, pk=pk, owner=request.user)
     if request.method == 'POST':
@@ -278,6 +280,7 @@ def question_add(request, pk):
     return render(request, 'teachers/question_add_form.html', {'exam': exam, 'form': form})
 
 
+@login_required
 def question_change(request, exam_pk, question_pk):
     # Simlar to the `question_add` view, this view is also managing
     # the permissions at object-level. By querying both `exam` and
@@ -356,6 +359,7 @@ def change_activity(request, pk):
 
 
 
+method_decorator([login_required, teacher_required], name='dispatch')
 class ExamResultsView(DetailView):
     model = Exam
     context_object_name = 'exam'
