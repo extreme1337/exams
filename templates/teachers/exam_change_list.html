@@ -27,9 +27,9 @@
             <td class="align-middle">{{exam.active}}</td>
             <td class="align-middle">
               {% if exam.active == False %}
-                <a type="button" class="btn btn-success align-middle" href="{% url 'teachers:exam_change_activity' exam.pk %}">Activate</a>
+                <a type="button" class="btn btn-success float-middle" href="{% url 'teachers:exam_change_activity' exam.pk %}">Activate</a>
               {% else %}
-                <a type="button" class="btn btn-danger align-middle" href="{% url 'teachers:exam_change_activity' exam.pk %}">Deactive</a>                
+                <a type="button" class="btn btn-danger float-middle" href="{% url 'teachers:exam_change_activity' exam.pk %}">Deactive</a>                
               {% endif %}
             </td>
             <td class="align-middle"><a href="{% url 'teachers:exam_results' exam.pk %}" class="btn btn-primary float-middle">View results</a></td>

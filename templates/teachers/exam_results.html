@@ -16,7 +16,8 @@
     <div class="card-header">
         <strong>Taken Exams</strong>
         <span class="badge badge-pill badge-primary float-right">Average Score:
-            {{exam_score.average_score|default_if_none:0.0 }}</span>
+            {% if exam_score.average_score == 0.0 %} {{ exam_score.average_score|default_if_none:0.0 }} {% else %} {{exam_score.average_score|floatformat:2 }} {% endif %}
+            </span>
     </div>
     <table class="table mb-0">
         <thead>
@@ -34,7 +35,7 @@
             <tr data-toggle="collapse" data-target="#taken_exam{{taken_exam.id}}" class="accordion-toogle">
                 <td>{{ taken_exam.student.user.username }}</td>
                 <td>{{ taken_exam.date|naturaltime }}</td>
-                <td>{{ taken_exam.score }}</td>
+                <td>{{ taken_exam.score|floatformat:2 }}</td>
                 <td>
                     {% if taken_exam.score >= 55 and taken_exam.score < 65 %}
                     2

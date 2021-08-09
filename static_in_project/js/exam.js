@@ -52,13 +52,16 @@ $.ajax({
         const data = response.data
         data.forEach(el => {
             for(const [question, answers] of Object.entries(el)){
+                console.log(el)
                 examBox.innerHTML += `
                     <hr>
                     <div class="mb-2">
                         <b>${question}</b>
+                        <p>Points: </p>
                     </div>
                 `
                 answers.forEach(answer => {
+                    
                     examBox.innerHTML += `
                         <div>
                             <input type="radio" class="ans" id="${question} - ${answer}" name="${question}" value="${answer}">

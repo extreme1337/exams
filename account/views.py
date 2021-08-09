@@ -88,10 +88,11 @@ def exam_data_view(request, pk):
     for q in exam.get_questions():
         answers = []
         for a in q.get_answers():
-            answers.append(a.text)  
+            answers.append(a.text)
         questions.append({str(q): answers})
-        
-    print(questions)
+
+    print(questions)   
+    
     return JsonResponse({
         'data': questions,
         'time': exam.duration,
@@ -117,21 +118,21 @@ def save_exam_view(request, pk):
         student = request.user.student
         exam = get_object_or_404(Exam, pk=pk)
 
+        max_score = 0
         score = 0
-        multiplier = 100 / exam.nuber_of_questions
         results = []
         correct_answer = None
 
         for q in questions:
             a_selected = request.POST.get(q.question_text)
-
+            max_score += q.points
             if a_selected != "":
                 question_answers = Answer.objects.filter(question=q)
                 for a in question_answers:
                     if a_selected == a.text:
                         StudentAnswer.objects.create(student=student, answer=a)
                         if a.correct:
-                            score += 1
+                            score += q.points
                             correct_answer = a.text
                     else:
                         if a.correct:
@@ -141,7 +142,13 @@ def save_exam_view(request, pk):
             else:
                 results.append({str(q): 'not answered'})
 
-        score_ = score * multiplier
+        multiplier = score / max_score
+        print("###################### MAX SCORE")
+        print(max_score)
+        print("########################## SCORE")
+        print(score)
+        score_ = multiplier * 100
+        print(score_)
         
         TakenExam.objects.create(student=student, exam=exam, score=score_)
 

@@ -36,10 +36,7 @@ class TakeExamForm(forms.ModelForm):
     )
 
     class Meta:
-        models = StudentAnswer
+        model = StudentAnswer
         fields = ('answer', )
 
-    def __init__(self, *args, **kwargs):
-        question = kwargs.pop('question')
-        super().__init__(*args, **kwargs)
-        self.fields['answer'].queryset = question.answers.order_by('question_text')
+    

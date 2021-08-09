@@ -17,10 +17,10 @@
                 
                 {% for taken_exam in taken_exams %}
                     <tr>
-                        <td>{{ taken_exam.exam.type }}</td>
-                        <td>{{ taken_exam.exam.subject }}</td>
-                        <td class=" {% if taken_exam.score < taken_exam.exam.required_score_to_pass %} bg-danger {% else %} bg-success {% endif %}">{{ taken_exam.score }} %</td>
-                        <td>
+                        <td class="align-middle">{{ taken_exam.exam.type }}</td>
+                        <td class="align-middle">{{ taken_exam.exam.subject }}</td>
+                        <td class="align-middle {% if taken_exam.score < taken_exam.exam.required_score_to_pass %} bg-danger {% else %} bg-success {% endif %}">{{ taken_exam.score|floatformat:2 }} %</td>
+                        <td class="align-middle">
                             {% if taken_exam.score >= 55 and taken_exam.score < 65 %}
                                 2
                             {% elif taken_exam.score >= 65 and taken_exam.score < 75 %}
@@ -36,7 +36,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td class="bg-light text-centar font-italic" colspan="3">You haven't cmpleted any exam yet.</td>
+                        <td class="align-middle bg-light text-centar font-italic" colspan="3">You haven't cmpleted any exam yet.</td>
                     </tr>
                 {% endfor %}
                      
