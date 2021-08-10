@@ -22,15 +22,7 @@
             <div class="col-md-10 col-sm-12">
                 <div class="row">
                     <div class="col-6">
-                        <h1>
-                            {% if user.is_authenticated and user.is_student %}
-                                <a href="students:exam_list">SKOLA</a>
-                            {% elif user.is_authenticated and user.is_teacher %}
-                                <a href="teachers:exam_change_list">SKOLA</a>
-                            {% endif %}
-                                
-                            
-                        </h1>
+                        <h1><a href="{% url 'home' %}">SKOLA</a></h1>
                     </div>
                     <div class="col-6 text-right">
                         {% if user.is_authenticated %}

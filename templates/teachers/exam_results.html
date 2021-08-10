@@ -59,6 +59,7 @@
                             <thead>
                                 <tr class="info">
                                     <th>Question</th>
+                                    <th>Points</th>
                                     <th>Answer</th>
                                     <th>Correct Answer</th>
                                 </tr>
@@ -68,6 +69,7 @@
                                 <tr data-toggle="collapse" class="accordion-toggle"
                                     data-target="#taken_exam{{taken_exam.id}}">
                                     <td>{{e}}</td>
+                                    <td>{{e.points}}</td>
                                     {% for answer in e.answers.all %}
                                         {% for stud_answer in answer.answer.all %}
                                             {% if stud_answer.student == taken_exam.student %}

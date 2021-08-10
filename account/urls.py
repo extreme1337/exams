@@ -1,10 +1,12 @@
 from os import name
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 
 from .views import *
 
 
 urlpatterns = [
+    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('', home, name='home'),
     path('students/', include(([
         path('',  ExamStudentListView.as_view(), name='exam_list'),

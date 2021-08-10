@@ -3,7 +3,9 @@ from .models import *
 
 # Register your models here.
 class UserStudentAdmin(admin.ModelAdmin):
-    list_display = ['username', 'student', 'first_name', 'last_name']
+    list_display = ['email', 'username', 'date_joined', 'last_login', 'student', 'first_name', 'last_name']
+    search_fields = ['email', 'username']
+    readonly_fields = ['id', 'date_joined', 'last_login']
 
 
 
