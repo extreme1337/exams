@@ -3,7 +3,6 @@ from django.urls.conf import path
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
 from school.models import Exam
-from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -16,9 +15,23 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, UpdateView
 from .forms import *
 from .decorators import *
+from django.template import RequestContext
 
 
 # Create your views here.
+def custom_page_not_found_view(request, exception):
+    return render(request, '404.html', {})
+
+def custom_error_view(request, exception=None):
+    return render(request, '500.html', {})
+
+def custom_permissin_denied_view(request, exception=None):
+    return render(request, '403.html', {})
+
+def bad_request(request, exception=None):
+    return render(request, '400.html', {})
+
+
 def home(request):
     if request.user.is_authenticated:
         if request.user.is_teacher:

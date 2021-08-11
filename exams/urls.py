@@ -17,10 +17,19 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from  django.conf import settings
+from django.conf.urls import (
+    handler400, handler403, handler404, handler500
+)
 
 admin.site.site_header = 'Tehnical School'
 
 app_name='exams'
+
+
+handler400 = 'account.views.bad_request'
+handler403 = 'account.views.custom_permissin_denied_view'
+handler404 = 'account.views.custom_page_not_found_view'
+handler500 = 'account.views.custom_error_view'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
