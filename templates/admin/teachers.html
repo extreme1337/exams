@@ -9,6 +9,7 @@
             <li class="breadcrumb-item active" aria-current="page">Teachers</li>
         </ol>
     </nav>
+    <a type="button" href="{% url 'users:add_new_user' %}" class="btn btn-primary mb-3">Add new user</a>
     <div class="card">
         <table class="table mb-0">
           <thead>
@@ -18,6 +19,7 @@
               <th>Last Name</th>
               <th>Email</th>
               <th>Is Active</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -33,6 +35,9 @@
                   {% else %}
                     <a type="button" class="btn btn-danger float-middle" href="">Deactive</a>                
                   {% endif %}
+                </td>
+                <td>
+                  <a href="{% url 'users:delete_user' user.pk %}" class="btn btn-danger" role="button">Delete</a>
                 </td>
               </tr>
             {% empty %}

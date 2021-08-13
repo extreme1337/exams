@@ -1,3 +1,4 @@
+from os import name
 from django.http.response import JsonResponse
 from django.urls.conf import path
 from django.views.generic.detail import DetailView
@@ -558,3 +559,33 @@ class SubjectAdminDeleteView(DeleteView):
     def get_success_url(self):
         school = self.get_object()
         return reverse('admins:subjects')
+
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class AddNewUserView(CreateView):  
+    model = User
+    fields = ('first_name', 'last_name', 'proflie_image', 'email', 'username', 'password', 'is_student', 'is_teacher', 'is_admin',)
+    context_object_name = 'user'
+    template_name = 'admin/add_new_user.html'
+
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.set_password(user.password)
+        user.save()
+        if user.is_student:
+            Student.objects.create(user=user)
+        messages.success(self.request, 'New user is successfully added.')
+        return redirect('admins:users')
+
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class UserAdminDeleteView(DeleteView):
+    model = User
+    context_object_name = 'user'
+    template_name = 'admin/user_delete_success.html'
+
+
+    def get_success_url(self):
+        school = self.get_object()
+        return reverse('admins:users')

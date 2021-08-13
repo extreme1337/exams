@@ -6,17 +6,16 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'admins:dashboard' %}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'admins:subjects' %}">Subjects</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'admins:update_subject' subject.pk %}">{{subject}}</a></li>
+            <li class="breadcrumb-item"><a href="">{{user.first_name}} {{user.last_name}}</a></li>
             <li class="breadcrumb-item active" aria-current="page">Confirm deletion</li>
         </ol>
     </nav>
     <h2 class="mb-3">Confirm deletion</h2>
-    <p class="lead">Are you sure you want to delete the subject <strong>{{subject}}</strong>? There is no going back.</p>
+    <p class="lead">Are you sure you want to delete the user <strong>{{user.first_name}} {{user.last_name}}</strong>? There is no going back.</p>
     <form method="POST">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger btn-lg">Yes, I'm sure</button>
-        <a href="{% url 'admins:update_subject' subject.pk %}" class="btn btn-outline-secondary btn-lg" role="button">Go to {{subject}}</a>
+        <a href="" class="btn btn-outline-secondary btn-lg" role="button">Go to {{user.first_name}} {{user.last_name}}</a>
     </form>
 {% endblock content %}
     
