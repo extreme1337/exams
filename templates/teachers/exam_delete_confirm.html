@@ -13,7 +13,7 @@
         </ol>
     </nav>
     <h2 class="mb-3">Confirm deletion</h2>
-    <p class="lead">Are you sure you want to delete the quiz <strong>{{exam.type}}</strong>? There is no going back.</p>
+    <p class="lead">Are you sure you want to delete the exam <strong>{{exam.type}}</strong>? There is no going back.</p>
     <form method="POST">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger btn-lg">Yes, I'm sure</button>

@@ -1,0 +1,47 @@
+{% extends '../base.html' %}
+
+
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" ><a href="{% url 'admins:dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item "><a href="{% url 'admins:users' %}">Users</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Students</li>
+        </ol>
+    </nav>
+    <div class="card">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Is Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in students %}
+              <tr>
+                <td class="align-middle"><a href="">{{ student.username }}</a></td>
+                <td class="align-middle">{{student.first_name}}</td>
+                <td class="align-middle">{{student.last_name}}</td>
+                <td class="align-middle">{{student.email}}</td>
+                <td class="align-middle">
+                  {% if student.is_active == False %}
+                    <a type="button" class="btn btn-success float-middle" href="">Activate</a>
+                  {% else %}
+                    <a type="button" class="btn btn-danger float-middle" href="">Deactive</a>                
+                  {% endif %}
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td class="bg-light text-center font-italic" colspan="5">There is no any students yet.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+
+{% endblock content %}

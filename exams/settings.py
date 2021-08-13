@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-l9((_l2$1lbugui#j--g&5f%l!7ini0qkl08$3#w0mj(f8_o=a
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
@@ -55,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'exams.urls'

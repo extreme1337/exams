@@ -36,6 +36,8 @@ def home(request):
     if request.user.is_authenticated:
         if request.user.is_teacher:
             return redirect('teachers:exam_change_list')
+        elif request.user.is_admin:
+            return redirect('admins:dashboard')
         else:
             return redirect('students:exam_list')
     return render(request, 'home.html')
@@ -408,6 +410,151 @@ class ExamResultsView(DetailView):
 #####################################################################################
 
 @login_required
+@admin_required
 def dashboard(request):
     return render(request, 'admin/dashboard.html', {})
-    
+
+
+
+@login_required
+@admin_required
+def all_users(request):
+    return render(request, 'admin/users.html', {})
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class AllStudentsListView(ListView):
+    model = User
+    ordering = ('last_name', )
+    context_object_name = 'students'
+    template_name = 'admin/students.html'
+
+    def get_queryset(self):
+        queryset = User.objects.filter(is_student=True)
+        return queryset
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class AllTeachersListView(ListView):
+    model = User
+    ordering = ('last_name', )
+    context_object_name = 'teachers'
+    template_name = 'admin/teachers.html'
+
+    def get_queryset(self):
+        queryset = User.objects.filter(is_teacher=True)
+        return queryset
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class AllSubjectsListView(ListView):
+    model = Subject
+    ordering = ('name', )
+    context_object_name = 'subjects'
+    template_name = 'admin/subjects.html'
+
+    def get_queryset(self):
+        queryset = Subject.objects.all()
+        return queryset
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class AllSchoolsListView(ListView):
+    model = School
+    ordering = ('name', )
+    context_object_name = 'schools'
+    template_name = 'admin/schools.html'
+
+    def get_queryset(self):
+        queryset = School.objects.all()
+        return queryset
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class AllExamsListView(ListView):
+    model = Exam
+    ordering = ('type', )
+    context_object_name = 'exams'
+    template_name = 'admin/exams.html'
+
+    def get_queryset(self):
+        queryset = Exam.objects.all()
+        return queryset
+
+@login_required
+@admin_required
+def change_activity_admin(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+    exam.active = not exam.active
+    exam.save()
+    return redirect('admins:exams')
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class SchoolAdminCreateView(CreateView):
+    model = School
+    fields = ('name', 'course')
+    context_object_name = 'schools'
+    template_name = 'admin/add_school.html'
+
+    def form_valid(self, form):
+        exam = form.save(commit=False)
+        exam.save()
+        messages.success(self.request, 'New school is successfully added.')
+        return redirect('admins:schools')
+
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class SchoolAdminUpdateView(UpdateView):
+    model = School
+    fields = ('name', 'course', )
+    context_object_name = 'school'
+    template_name = 'admin/update_school.html'
+
+    def get_success_url(self):
+        school = self.get_object()
+        return reverse('admins:schools')
+
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class SchoolAdminDeleteView(DeleteView):
+    model = School
+    context_object_name = 'school'
+    template_name = 'admin/school_delete_success.html'
+
+
+    def get_success_url(self):
+        school = self.get_object()
+        return reverse('admins:schools')
+
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class SubjectAdminCreateView(CreateView):
+    model = Subject
+    fields = ('name', 'school')
+    context_object_name = 'subject'
+    template_name = 'admin/add_subject.html'
+
+    def form_valid(self, form):
+        exam = form.save(commit=False)
+        exam.save()
+        messages.success(self.request, 'New subject is successfully added.')
+        return redirect('admins:subjects')
+
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class SubjectAdminUpdateView(UpdateView):
+    model = Subject
+    fields = ('name', 'school', )
+    context_object_name = 'subject'
+    template_name = 'admin/update_subject.html'
+
+    def get_success_url(self):
+        school = self.get_object()
+        return reverse('admins:subjects')
+
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class SubjectAdminDeleteView(DeleteView):
+    model = Subject
+    context_object_name = 'subject'
+    template_name = 'admin/subject_delete_success.html'
+
+
+    def get_success_url(self):
+        school = self.get_object()
+        return reverse('admins:subjects')

@@ -17,7 +17,7 @@
                     <p>To see all users (students, teachers and admins) continue to next page.</p>
                 </div>
                 <div class="card-footer d-flex flex-row-reverse">
-                    <a href=""><i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{% url 'admins:users' %}"><i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
                     <p>For managing subjects (add, edit, delete) continue to next page.</p>
                 </div>
                 <div class="card-footer d-flex flex-row-reverse">
-                    <a href=""><i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{% url 'admins:subjects' %}"><i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
                     <p>For managing subjects (add, edit, delete) continue to next page.</p>
                 </div>
                 <div class="card-footer d-flex flex-row-reverse">
-                    <a href=""><i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{% url 'admins:schools' %}"><i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@
                     <p>For managing exams (add, edit, delete) continue to next page.</p>
                 </div>
                 <div class="card-footer d-flex flex-row-reverse">
-                    <a href=""><i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{% url 'admins:exams' %}"><i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>

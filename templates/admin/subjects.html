@@ -4,8 +4,32 @@
 {% block content %}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+            <li class="breadcrumb-item" ><a href="{% url 'admins:dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Subjects</li>
         </ol>
     </nav>
+    <a href="{% url 'admins:add_subject' %}" class="btn btn-primary mb-3" role="button">Add Subject</a>
+    <div class="card">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Schools</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subject in subjects %}
+                    <tr>
+                        <td><a href="{% url 'admins:update_subject' subject.pk %}">{{subject}}</a></td>
+                        <td>{% for s in subject.school.all%} {{s}} {% endfor %}</td>
+                        <td>
+                            <a href="{% url 'admins:delete_subject' subject.pk %}" class="btn btn-danger" role="button">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     
 {% endblock content %}

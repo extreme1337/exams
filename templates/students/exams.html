@@ -8,6 +8,7 @@
             <tr>
                 <th>Exam</th>
                 <th>Subject</th>
+                <th>Teacher</th>
                 <th>Duration</th>
                 <th>Minimum to pass</th>
                 <th>Link</th>
@@ -18,6 +19,7 @@
                 <tr>
                     <td class="align-middle">{{exam.type}}</td>
                     <td class="align-middle">{{exam.subject}}</td>
+                    <td class="align-middle">{{exam.owner}}</td>
                     <td class="align-middle">{{exam.duration}} (min)</td>
                     <td class="align-middle">{{exam.required_score_to_pass}} %</td>
                     <td class="align-right"><a href="{% url 'students:take_exam' exam.pk %}" role="button" class="btn btn-primary">LINK</a></td>

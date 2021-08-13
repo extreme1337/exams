@@ -9,6 +9,7 @@
                 <tr>
                     <th>Exam</th>
                     <th>Subject</th>
+                    <th>Teacher</th>
                     <th>Score</th>
                     <th>Mark</th>
                 </tr>
@@ -19,6 +20,7 @@
                     <tr>
                         <td class="align-middle">{{ taken_exam.exam.type }}</td>
                         <td class="align-middle">{{ taken_exam.exam.subject }}</td>
+                        <td class="align-middle">{{taken_exam.exam.owner}}</td>
                         <td class="align-middle {% if taken_exam.score < taken_exam.exam.required_score_to_pass %} bg-danger {% else %} bg-success {% endif %}">{{ taken_exam.score|floatformat:2 }} %</td>
                         <td class="align-middle">
                             {% if taken_exam.score >= 55 and taken_exam.score < 65 %}

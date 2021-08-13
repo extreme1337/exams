@@ -31,6 +31,19 @@ urlpatterns = [
 
     path('admins/', include(([
         path('',  dashboard, name='dashboard'),
+        path('users/',  all_users, name='users'),
+        path('users/students/',  AllStudentsListView.as_view(), name='students'),
+        path('users/teachers/',  AllTeachersListView.as_view(), name='teachers'),
+        path('subjects/',  AllSubjectsListView.as_view(), name='subjects'),
+        path('schools/',  AllSchoolsListView.as_view(), name='schools'),
+        path('exams/',  AllExamsListView.as_view(), name='exams'),
+        path('exams/<int:pk>/activity/', change_activity_admin, name='exam_change_admin'),
+        path('schools/add_new_school/', SchoolAdminCreateView.as_view(), name='add_school'),
+        path('schools/update_school/<int:pk>', SchoolAdminUpdateView.as_view(), name='update_school'),
+        path('schools/delete_school/<int:pk>', SchoolAdminDeleteView.as_view(), name='delete_school'),
+        path('schools/add_new_subject/', SubjectAdminCreateView.as_view(), name='add_subject'),
+        path('schools/update_subject/<int:pk>', SubjectAdminUpdateView.as_view(), name='update_subject'),
+        path('schools/delete_subject/<int:pk>', SubjectAdminDeleteView.as_view(), name='delete_subject'),
         
     ], 'account'), namespace='admins')),
     
