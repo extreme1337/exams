@@ -5,7 +5,8 @@
 {% block content %}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'admins:dashboard' %}">Schools</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admins:dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'admins:schools' %}">Schools</a></li>
             <li class="breadcrumb-item"><a href="{% url 'admins:update_school' school.pk %}">{{school}}</a></li>
             <li class="breadcrumb-item active" aria-current="page">Confirm deletion</li>
         </ol>

@@ -25,7 +25,7 @@
           <tbody>
             {% for teacher in teachers %}
               <tr>
-                <td class="align-middle"><a href="">{{ teacher.username }}</a></td>
+                <td class="align-middle"><a href="{% url 'users:update_user' teacher.pk %}">{{ teacher.username }}</a></td>
                 <td class="align-middle">{{teacher.first_name}}</td>
                 <td class="align-middle">{{teacher.last_name}}</td>
                 <td class="align-middle">{{teacher.email}}</td>

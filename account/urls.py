@@ -49,7 +49,7 @@ urlpatterns = [
     
     path('users/', include(([
         path('add_user/', AddNewUserView.as_view(), name='add_new_user'),
-        #path('update_user/<int:pk>', UpdateUserView.as_view(), name='update_user')
+        path('update_user/<int:pk>', UpdateUserView.as_view(), name='update_user'),
         path('delete_user/<int:pk>', UserAdminDeleteView.as_view(), name='delete_user'),
     ], 'account'), namespace="users")),
     

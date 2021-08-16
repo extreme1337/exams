@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
-from django.forms import fields
+from django.forms import fields, widgets
 from django.forms.utils import ValidationError
 
 from school.models import *
@@ -43,3 +43,14 @@ class TakeExamForm(forms.ModelForm):
         question = kwargs.pop('question')
         super().__init__(*args, **kwargs)
         self.fields['answer'].queryset = question.answers.order_by('question_text')
+
+
+class UserForm(forms.ModelForm):
+    password = forms.CharField(max_length=255, widget=forms.PasswordInput)
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'proflie_image', 'email', 'username', 'password', 'is_student', 'is_teacher', 'is_admin',)
+    
+    widgets = {
+        'password': widgets.TextInput(attrs={'type': 'password'})
+    }

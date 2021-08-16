@@ -564,7 +564,7 @@ class SubjectAdminDeleteView(DeleteView):
 @method_decorator([login_required, admin_required], name='dispatch')
 class AddNewUserView(CreateView):  
     model = User
-    fields = ('first_name', 'last_name', 'proflie_image', 'email', 'username', 'password', 'is_student', 'is_teacher', 'is_admin',)
+    form_class = UserForm
     context_object_name = 'user'
     template_name = 'admin/add_new_user.html'
 
@@ -584,7 +584,29 @@ class UserAdminDeleteView(DeleteView):
     model = User
     context_object_name = 'user'
     template_name = 'admin/user_delete_success.html'
+    
 
+
+    def get_success_url(self):
+        school = self.get_object()
+        return reverse('admins:users')
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class UpdateUserView(UpdateView):
+    model = User
+    form_class = UserForm
+    context_object_name = 'user'
+    template_name = 'admin/edit_user.html'
+
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.set_password(user.password)
+        user.save()
+        if user.is_student:
+            Student.objects.get_or_create(user=user)
+        messages.success(self.request, f'User is successfully updated. {user.username}')
+        return redirect('admins:users')
 
     def get_success_url(self):
         school = self.get_object()
