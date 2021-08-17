@@ -44,6 +44,13 @@ urlpatterns = [
         path('schools/add_new_subject/', SubjectAdminCreateView.as_view(), name='add_subject'),
         path('schools/update_subject/<int:pk>', SubjectAdminUpdateView.as_view(), name='update_subject'),
         path('schools/delete_subject/<int:pk>', SubjectAdminDeleteView.as_view(), name='delete_subject'),
+        path('exams/add/', ExamAdminCreateView.as_view(), name='exam_add_admin'),
+        path('exams/<int:pk>/', ExamAdminUpdateView.as_view(), name='exam_change_admin'),
+        path('exams/<int:pk>/activity/', change_activity_exam_admin, name='exam_change_activity_admin'),
+        path('exams/<int:pk/delete/', ExamAdminDeleteView.as_view(), name='exam_delete_admin'),
+        path('exams/<int:pk>/question/add/', question_add_admin, name='question_add_admin'),
+        path('exams/<int:exam_pk>/question/<int:question_pk>/', question_change_admin, name='question_change_admin'),
+        path('exams/<int:exam_pk>/question/<int:question_pk>/delete', QuestionAdminDeleteView.as_view(), name='question_delete_admin'),
         
     ], 'account'), namespace='admins')),
     
@@ -51,6 +58,7 @@ urlpatterns = [
         path('add_user/', AddNewUserView.as_view(), name='add_new_user'),
         path('update_user/<int:pk>', UpdateUserView.as_view(), name='update_user'),
         path('delete_user/<int:pk>', UserAdminDeleteView.as_view(), name='delete_user'),
+        path('profile/<int:pk>', UpdateUserDetailsView.as_view(), name='profile'),
     ], 'account'), namespace="users")),
     
 

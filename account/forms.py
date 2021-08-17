@@ -45,12 +45,28 @@ class TakeExamForm(forms.ModelForm):
         self.fields['answer'].queryset = question.answers.order_by('question_text')
 
 
-class UserForm(forms.ModelForm):
-    password = forms.CharField(max_length=255, widget=forms.PasswordInput)
+class AdminUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'proflie_image', 'email', 'username', 'password', 'is_student', 'is_teacher', 'is_admin',)
     
-    widgets = {
-        'password': widgets.TextInput(attrs={'type': 'password'})
-    }
+        widgets = {
+            'password': widgets.TextInput(attrs={'type': 'password',})
+        }
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'proflie_image', 'email', 'username', 'password', )
+
+        widgets = {
+            'password': widgets.TextInput(attrs={'type': 'password',})
+        }
+
+class AddExamAdminForm(forms.ModelForm):
+    teachers = User.objects.filter(is_teacher=True)
+    owner = forms.ModelChoiceField(queryset=teachers)
+    class Meta:
+        model = Exam
+        fields = ('type', 'subject', 'active', 'duration', 'required_score_to_pass', 'nuber_of_questions', 'owner', )

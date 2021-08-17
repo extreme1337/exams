@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-6 text-right">
                         {% if user.is_authenticated %}
-                            <p>Logged in as <strong><a href="">{{user.email}}</a></strong>. <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-md" role="button">Log Out</a></p>
+                            <p>Logged in as <strong><a href="{% url 'users:profile' user.pk %}">{{user.email}}</a></strong>. <a href="{% url 'logout' %}" class="btn btn-outline-secondary btn-md" role="button">Log Out</a></p>
                         {% else %}
                             <p><a href="{% url 'login' %}" class="btn btn-light" role="button">Log in</a></p>
                         {% endif %}

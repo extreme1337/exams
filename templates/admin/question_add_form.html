@@ -1,0 +1,23 @@
+{% extends '../base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item" ><a href="{% url 'admins:dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item" ><a href="{% url 'admins:exams' %}">Exams</a></li>
+        <li class="breadcrumb-item" ><a href="{% url 'admins:exam_change_admin' exam.pk %}">{{exam.type}}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add new Question</li>
+    </ol>
+</nav>
+<h2 class="mb-3">Add a new question</h2>
+  <p class="lead">Add first the text of the question. In the next step you will be able to add the possible answers.</p>
+  <form method="POST" novalidate>
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-success">Save</button>
+    <a href="{% url 'admins:exam_change_admin' exam.pk %}" class="btn btn-outline-secondary" role="button">Go back to {{exam}}</a>
+  </form>
+{% endblock content %}
+    

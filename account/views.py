@@ -5,7 +5,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
 from school.models import Exam
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Avg, Count
@@ -217,7 +217,7 @@ class ExamTeacherCreateView(CreateView):
         exam = form.save(commit=False)
         exam.owner = self.request.user
         exam.save()
-        messages.success(self.request, 'The exam was created with success! Go aged and add some exams')
+        messages.success(self.request, 'The exam was created with success! Go ahed and add some exams')
         return redirect('teachers:exam_change', exam.pk)
 
 
@@ -287,6 +287,7 @@ class ExamResultsView(DetailView):
 
 
 @login_required
+@teacher_required
 def question_add(request, pk):
     exam = get_object_or_404(Exam, pk=pk, owner=request.user)
     if request.method == 'POST':
@@ -304,6 +305,7 @@ def question_add(request, pk):
 
 
 @login_required
+@teacher_required
 def question_change(request, exam_pk, question_pk):
     # Simlar to the `question_add` view, this view is also managing
     # the permissions at object-level. By querying both `exam` and
@@ -564,7 +566,7 @@ class SubjectAdminDeleteView(DeleteView):
 @method_decorator([login_required, admin_required], name='dispatch')
 class AddNewUserView(CreateView):  
     model = User
-    form_class = UserForm
+    form_class = AdminUserForm
     context_object_name = 'user'
     template_name = 'admin/add_new_user.html'
 
@@ -594,7 +596,7 @@ class UserAdminDeleteView(DeleteView):
 @method_decorator([login_required, admin_required], name='dispatch')
 class UpdateUserView(UpdateView):
     model = User
-    form_class = UserForm
+    form_class = AdminUserForm
     context_object_name = 'user'
     template_name = 'admin/edit_user.html'
 
@@ -611,3 +613,159 @@ class UpdateUserView(UpdateView):
     def get_success_url(self):
         school = self.get_object()
         return reverse('admins:users')
+
+@method_decorator([login_required, teacher_required, student_required], name='dispatch')
+class UpdateUserDetailsView(UpdateView):
+    model = User
+    form_class = UserForm
+    context_object_name = 'user'
+    template_name = 'user/profile.html'
+
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.set_password(user.password)
+        user.save()
+        if user.is_student:
+            Student.objects.get_or_create(user=user)
+        messages.success(self.request, f'User is successfully updated. {user.username}')
+        return redirect('home')
+
+    def get_success_url(self):
+        school = self.get_object()
+        return reverse('home')
+
+
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class ExamAdminCreateView(CreateView):
+    model = Exam
+    form_class = AddExamAdminForm
+    context_object_name = 'exams'
+    template_name = 'admin/exam_add_form.html'
+
+    def form_valid(self, form):
+        exam = form.save(commit=False)
+        exam.save()
+        messages.success(self.request, 'The exam was created with success! Go ahed and add some exams')
+        return redirect('admins:exam_change_admin', exam.pk)
+
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class ExamAdminDeleteView(DeleteView):
+    model = Exam
+    context_object_name = 'exam'
+    template_name = 'admin/exam_delete_confirm_confirm.html'
+    success_url = reverse_lazy('admins:exam_change_list')
+
+    def delete(self, request, *args, **kwargs):
+        exam = self.get_object()
+        messages.success(request, 'The exam %s was deleted with success!' % exam.type)
+        return super().delete(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.request.user.exams.all()
+
+@method_decorator([login_required, admin_required], name="dispatch")
+class ExamAdminUpdateView(UpdateView):
+    model = Exam
+    fields = ('type', 'subject', )
+    context_object_name = 'exam'
+    template_name = 'admin/exam_change_form.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['questions'] = self.get_object().questions.annotate(answers_count=Count('answers'))
+        return super().get_context_data(**kwargs)
+
+
+    def get_success_url(self):
+        return reverse('admins:exam_change_admin', kwargs={'pk': self.object.pk})
+
+
+@login_required
+@admin_required
+def change_activity_exam_admin(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+    exam.active = not exam.active
+    exam.save()
+    return redirect('admins:exams')
+
+
+@login_required
+@admin_required
+def question_add_admin(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.exam = exam
+            question.save()
+            messages.success(request, 'You may now add answers/options to the question.')
+            return redirect('admins:exam_change_admin', exam.pk)
+        else:
+            form = QuestionForm()
+    form = QuestionForm()
+    return render(request, 'admin/question_add_form.html', {'exam': exam, 'form': form})
+
+
+@login_required
+@admin_required
+def question_change_admin(request, exam_pk, question_pk):
+    exam = get_object_or_404(Exam, pk=exam_pk)
+    question = get_object_or_404(Question, pk=question_pk, exam=exam)
+
+    AnswerFormSet = inlineformset_factory(
+        Question,  # parent model
+        Answer,  # base model
+        formset=BaseAnswerInlineFormSet,
+        fields=('text', 'correct'),
+        min_num=2,
+        validate_min=True,
+        max_num=10,
+        validate_max=True
+    )
+
+    if request.method == 'POST':
+        form = QuestionForm(request.POST, instance=question)
+        formset = AnswerFormSet(request.POST, instance=question)
+        if form.is_valid() and formset.is_valid():
+            with transaction.atomic():
+                form.save()
+                formset.save()
+            messages.success(request, 'Question and answers saved with success!')
+            return redirect('admins:exam_change_admin', exam.pk)
+    else:
+        form = QuestionForm(instance=question)
+        formset = AnswerFormSet(instance=question)
+
+    return render(request, 'admin/question_change_form_admin.html', {
+        'exam': exam,
+        'question': question,
+        'form': form,
+        'formset': formset
+    })
+
+
+@method_decorator([login_required, admin_required], name='dispatch')
+class QuestionAdminDeleteView(DeleteView):
+    model = Question
+    context_object_name = 'question'
+    template_name = 'admin/question_delete_confirm_admin.html'
+    pk_url_kwarg = 'question_pk'
+
+    def get_context_data(self, **kwargs):
+        question = self.get_object()
+        kwargs['exam'] = question.exam
+        return super().get_context_data(**kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        question = self.get_object()
+        messages.success(request, 'The question %s was deleted with success!' % question.question_text)
+        return super().delete(request, *args, **kwargs)
+
+
+    def get_success_url(self):
+        question = self.get_object()
+        return reverse('admins:exam_change_admin', kwargs={'pk': question.exam_id})
+

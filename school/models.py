@@ -43,7 +43,7 @@ class Question(models.Model):
         NORMAL = 'NO', _('Normal')
         HARD = 'HA', _('Hard')
     question_text = models.CharField(max_length=250)
-    picture = models.ImageField(null=True, blank=True)
+    picture = models.ImageField(upload_to='questions/question/', null=True, blank=True)
     level = models.CharField(max_length=6, choices=Difficulty.choices)
     multiple_answers = models.BooleanField(default=False)
     exam = models.ForeignKey('Exam', on_delete=models.CASCADE, related_name='questions')
@@ -59,6 +59,7 @@ class Question(models.Model):
 class Answer(models.Model):
     text = models.CharField(max_length=300)
     correct = models.BooleanField(default=False)
+    picture = models.ImageField(upload_to='questions/answares/', null=True, blank=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
 
     def __str__(self):
